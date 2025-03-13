@@ -5,7 +5,6 @@ using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Explicit sökväg till appsettings.json
 var configPath = @"C:\Users\phosf\OneDrive - Högskolan Väst\Documents\sysArkt_SOS100\SOAgrpAPI\Rooms\Room\appsettings.json";
 
 // Kontrollera om filen finns

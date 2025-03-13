@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class RoomModel
     {
@@ -14,7 +15,7 @@
         public bool IsVacant { get; set; }
 
         [Required]
-        [Range(0, 10000)] // Exempel på validering för priset
+        [Column(TypeName = "decimal(18,2)")] // Exempel på validering för priset
         public decimal Price { get; set; }
 
         public bool NeedCleaning { get; set; }

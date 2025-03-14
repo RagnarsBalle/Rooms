@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Room.Models; // Rätt namespace för RoomModel
+using Room.Models;
 
 namespace Room.Data
 {
@@ -7,6 +7,6 @@ namespace Room.Data
     {
         public RoomDbContext(DbContextOptions<RoomDbContext> options) : base(options) { }
 
-        public DbSet<RoomModel> Rooms { get; set; } // Pluraliserat för att matcha tabellnamn
+        public DbSet<RoomModel> Rooms { get; set; }
     }
 }

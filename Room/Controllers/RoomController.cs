@@ -37,4 +37,27 @@ public class RoomController : ControllerBase
 
         return CreatedAtAction(nameof(Get), new { id = data.RoomID }, data);
     }
+
+    // GET api/rooms/{id}
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<RoomDto>> GetRoom(int id)
+    {
+        var room = await _context.Rooms.FindAsync(id);
+
+        if (room == null)
+            return NotFound();
+
+        var roomDto = new RoomDto
+        {
+            RoomID = room.RoomID,
+            RoomType = room.RoomType,
+            IsVacant = room.IsVacant,
+            Price = room.Price,
+            NeedCleaning = room.NeedCleaning
+        };
+
+        return Ok(roomDto);
+    }
+
 }

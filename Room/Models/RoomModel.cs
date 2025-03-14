@@ -6,16 +6,18 @@
 
     public class RoomModel
     {
+
+
         [Key]
         public int RoomID { get; set; }
 
         [Required]
-        public string RoomType { get; set; } = null!; // Undviker nullable-varning
+        public string RoomType { get; set; } = null!; // Avoid NULL-warning
 
         public bool IsVacant { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")] // Exempel på validering för priset
+        [Column(TypeName = "decimal(18,2)")] // Price validation
         public decimal Price { get; set; }
 
         public bool NeedCleaning { get; set; }

@@ -5,7 +5,7 @@ using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configPath = @"C:\Users\phosf\OneDrive - Högskolan Väst\Documents\sysArkt_SOS100\SOAgrpAPI\Rooms\Room\appsettings.json";
+var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
 
 // Kontrollera om filen finns
 if (!File.Exists(configPath))

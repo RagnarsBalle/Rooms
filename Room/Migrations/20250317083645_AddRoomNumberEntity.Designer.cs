@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Room.Data;
 
@@ -10,9 +11,11 @@ using Room.Data;
 namespace Room.Migrations
 {
     [DbContext(typeof(RoomDbContext))]
-    partial class RoomDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250317083645_AddRoomNumberEntity")]
+    partial class AddRoomNumberEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,16 +43,13 @@ namespace Room.Migrations
 
                     b.Property<string>("RoomNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoomType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RoomID");
-
-                    b.HasIndex("RoomNumber")
-                        .IsUnique();
 
                     b.ToTable("Rooms");
                 });

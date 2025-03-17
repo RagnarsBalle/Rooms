@@ -38,26 +38,44 @@ public class RoomController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = data.RoomID }, data);
     }
 
-    // GET api/rooms/{id}
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<RoomDto>> GetRoom(int id)
+    // PUT api/room/{roomNumber}
+    [HttpPut("{RoomNumber}")]
+    public async Task<IActionResult> UpdateRoomByNumber(string RoomNumber, RoomDto RoomDto)
     {
-        var room = await _context.Rooms.FindAsync(id);
+        if (RoomNumber != RoomDto.RoomNumber)
+            return BadRequest("Rumsnumret stämmer inte.");
 
-        if (room == null)
-            return NotFound();
+        var existingRoom = await _context.Rooms
+            .FirstOrDefaultAsync(r => r.RoomNumber == RoomNumber);
 
-        var roomDto = new RoomDto
-        {
-            RoomID = room.RoomID,
-            RoomType = room.RoomType,
-            IsVacant = room.IsVacant,
-            Price = room.Price,
-            NeedCleaning = room.NeedCleaning
-        };
+        if (existingRoom == null)
+            return NotFound("Rummet hittades ej.");
 
-        return Ok(roomDto);
+        existingRoom.RoomType = RoomDto.RoomType;
+        existingRoom.IsVacant = RoomDto.IsVacant;
+        existingRoom.Price = RoomDto.Price;
+        existingRoom.NeedCleaning = RoomDto.NeedCleaning;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
     }
+
+    // DELETE api/room/{roomNumber} 
+    [HttpDelete("{RoomNumber}")]
+
+    public async Task<IActionResult> DeleteRoomByNumber(string RoomNumber)
+    {
+        var existingRoom = await _context.Rooms
+            .FirstOrDefaultAsync(r => r.RoomNumber == RoomNumber);
+        if (existingRoom == null)
+            return NotFound("Rummet hittades ej.");
+        _context.Rooms.Remove(existingRoom);
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+
 
 }

@@ -1,30 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Room.Data; // Importera rätt namespace
+using Room.Data;
 using Microsoft.Extensions.Configuration;
-using System.IO;
+using Scalar.AspNetCore;
+using Microsoft.AspNetCore.OpenApi; // Lägg till OpenAPI
 
 var builder = WebApplication.CreateBuilder(args);
-
-var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
-
-// Kontrollera om filen finns
-if (!File.Exists(configPath))
-{
-    throw new FileNotFoundException($"Konfigurationsfilen saknas: {configPath}");
-}
-
-// Läs in konfigurationen
-builder.Configuration.SetBasePath(Path.GetDirectoryName(configPath) ?? Directory.GetCurrentDirectory());
-builder.Configuration.AddJsonFile(Path.GetFileName(configPath), optional: false, reloadOnChange: true);
 
 // Lägg till tjänster i DI-containern
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// Lägg till RoomDbContext med explicit anslutningssträng
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Lägg till RoomDbContext med anslutningssträng
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
 if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("Anslutningssträngen 'DefaultConnection' saknas i appsettings.json.");
@@ -33,26 +22,24 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<RoomDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-/* 
-// Lägg till ApplicationDbContext (SÄKERHETSDATABAS) när den andra gruppen har lagt upp sin server.
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SecurityDatabase")));
-*/
+// Lägg till OpenAPI för att generera dokumentation
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Konfigurera Swagger UI
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Room API v1");
-        c.RoutePrefix = string.Empty; // Swagger visas direkt på roten
-    });
-}
-
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+// Aktivera OpenAPI-mellanvara för att skapa dokumentationen
+app.MapOpenApi();
+
+// Aktivera Scalar UI på /docs
+app.MapScalarApiReference(options =>
+{
+    options.Title = "Room API Dokumentation";
+    options.Theme = ScalarTheme.Mars; // Du kan välja ett annat tema
+    options.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
+});
+
 app.MapControllers();
 app.Run();

@@ -1,0 +1,8 @@
+﻿{
+  "RoomID": 1005,
+  "RoomNumber": "200",
+  "RoomType": "UpdatedType",
+  "IsVacant": false,
+  "Price": 999.99,
+  "NeedCleaning": false
+}

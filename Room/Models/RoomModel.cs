@@ -12,17 +12,18 @@
 
         [Required]
         [Column(TypeName = "nvarchar(50)")] // Säkerställ att RoomNumber sparas som sträng
-        public string RoomNumber { get; set; } = null!; // Undviker null-värden
+        public string RoomNumber { get; set; } = string.Empty; // Undviker null-värden
 
         [Required]
-        public string RoomType { get; set; } = null!; // Undviker null-värden
+        [Column(TypeName = "nvarchar(50)")] // Lägg till specifik datatyp för RoomType
+        public string RoomType { get; set; } = string.Empty; // Undviker null-värden
 
-        public bool IsVacant { get; set; }
+        public bool IsVacant { get; set; } = true; // Standardvärde för lediga rum
 
         [Required]
         [Column(TypeName = "decimal(18,2)")] // Validering för prisformat
-        public decimal Price { get; set; }
+        public decimal Price { get; set; } = 0.00m; // Standardvärde
 
-        public bool NeedCleaning { get; set; }
+        public bool NeedCleaning { get; set; } = false; // Standardvärde
     }
 }

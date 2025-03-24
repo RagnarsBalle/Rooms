@@ -26,6 +26,7 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ApiLoggingMiddleware>();
 app.UseAuthorization();
 app.UsePathBase("/RoomAPI");
 
